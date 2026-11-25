@@ -103,6 +103,17 @@ router.post('/products/:id/reviews', requireAuth, validate(reviewSchema), asyncH
   res.status(201).json({ ok: true });
 }));
 
+// Images envoyées depuis l'administration (stockées en base)
+router.get('/images/:id', asyncHandler(async (req, res) => {
+  const id = Number(req.params.id);
+  if (!Number.isInteger(id)) throw new HttpError(404, 'Image introuvable.');
+  const { rows } = await query('SELECT mime, data FROM images WHERE id = $1', [id]);
+  if (!rows[0]) throw new HttpError(404, 'Image introuvable.');
+  res.set('Content-Type', rows[0].mime);
+  res.set('Cache-Control', 'public, max-age=31536000, immutable');
+  res.send(rows[0].data);
+}));
+
 router.get('/categories', asyncHandler(async (_req, res) => {
   const { rows } = await query(`
     SELECT c.*, COUNT(p.id) FILTER (WHERE p.is_active)::int AS product_count

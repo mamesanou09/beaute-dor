@@ -1,0 +1,25 @@
+# Déploiement Render en un clic (Blueprint) — la base PostgreSQL est hébergée chez Neon.
+services:
+  - type: web
+    name: beaute-dor
+    runtime: node
+    plan: free
+    region: frankfurt
+    buildCommand: npm run render:build
+    startCommand: npm run render:start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: NODE_VERSION
+        value: "22"
+      - key: DATABASE_URL
+        sync: false          # à coller depuis Neon
+      - key: DATABASE_SSL
+        value: "true"
+      - key: JWT_SECRET
+        generateValue: true  # généré automatiquement par Render
+      - key: ADMIN_EMAIL
+        value: admin@beautedor.sn
+      - key: ADMIN_PASSWORD
+        sync: false          # à saisir dans Render

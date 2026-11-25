@@ -7,7 +7,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 export async function migrate({ reset = false } = {}) {
   if (reset) {
-    await pool.query(`DROP TABLE IF EXISTS contact_messages, settings, order_items, orders, delivery_zones,
+    await pool.query(`DROP TABLE IF EXISTS images, contact_messages, settings, order_items, orders, delivery_zones,
       favorites, reviews, products, brands, categories, users CASCADE`);
     console.log('🗑️  Tables supprimées');
   }

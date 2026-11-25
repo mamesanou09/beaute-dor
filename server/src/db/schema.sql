@@ -135,3 +135,10 @@ CREATE TABLE IF NOT EXISTS contact_messages (
 CREATE OR REPLACE FUNCTION unaccent_lower(t text) RETURNS text AS $$
   SELECT translate(lower(t), 'àâäáãåéèêëíìîïóòôöõúùûüçñœ', 'aaaaaaeeeeiiiiooooouuuucno')
 $$ LANGUAGE sql IMMUTABLE;
+
+CREATE TABLE IF NOT EXISTS images (
+  id         SERIAL PRIMARY KEY,
+  mime       VARCHAR(40) NOT NULL,
+  data       BYTEA NOT NULL,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);

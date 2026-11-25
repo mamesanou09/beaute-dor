@@ -1,7 +1,6 @@
 import { Router } from 'express';
 import path from 'node:path';
 import fs from 'node:fs';
-import crypto from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 import multer from 'multer';
 import { z } from 'zod';
@@ -18,14 +17,10 @@ fs.mkdirSync(UPLOAD_DIR, { recursive: true });
 const router = Router();
 
 // ---------- Upload d'images ----------
+// Les images sont stockées dans PostgreSQL (table "images") : elles survivent aux
+// redémarrages des hébergeurs à disque éphémère (Render gratuit, Railway…).
 const upload = multer({
-  storage: multer.diskStorage({
-    destination: UPLOAD_DIR,
-    filename: (_req, file, cb) => {
-      const ext = { 'image/jpeg': '.jpg', 'image/png': '.png', 'image/webp': '.webp' }[file.mimetype];
-      cb(null, `${Date.now()}-${crypto.randomBytes(6).toString('hex')}${ext}`);
-    },
-  }),
+  storage: multer.memoryStorage(),
   limits: { fileSize: 3 * 1024 * 1024 },
   fileFilter: (_req, file, cb) => {
     if (['image/jpeg', 'image/png', 'image/webp'].includes(file.mimetype)) cb(null, true);
@@ -33,10 +28,11 @@ const upload = multer({
   },
 });
 
-router.post('/upload', requirePermission('products.write'), upload.single('image'), (req, res) => {
+router.post('/upload', requirePermission('products.write'), upload.single('image'), asyncHandler(async (req, res) => {
   if (!req.file) throw new HttpError(400, 'Aucune image reçue.');
-  res.status(201).json({ url: `/uploads/${req.file.filename}` });
-});
+  const { rows } = await query('INSERT INTO images (mime, data) VALUES ($1, $2) RETURNING id', [req.file.mimetype, req.file.buffer]);
+  res.status(201).json({ url: `/api/images/${rows[0].id}` });
+}));
 
 // ---------- Tableau de bord ----------
 router.get('/stats', requirePermission('orders.read'), asyncHandler(async (_req, res) => {

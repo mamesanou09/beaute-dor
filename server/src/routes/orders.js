@@ -20,7 +20,7 @@ const orderSchema = z.object({
     quantity: z.coerce.number().int().min(1).max(50),
   })).min(1, 'Votre panier est vide.').max(50),
   customer_name: z.string().trim().min(3, 'Nom complet requis').max(120),
-  phone: z.string().trim().regex(phoneRegex, 'Numéro de téléphone invalide (ex : 77 000 00 00)'),
+  phone: z.string().trim().regex(phoneRegex, 'Numéro de téléphone invalide (ex : 7X XXX XX XX)'),
   address: z.string().trim().min(5, 'Adresse de livraison requise').max(300),
   district_city: z.string().trim().min(2, 'Quartier / ville requis').max(120),
   zone_id: z.coerce.number().int().positive('Choisissez une zone de livraison'),

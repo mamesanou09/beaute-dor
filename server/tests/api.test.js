@@ -49,7 +49,7 @@ test('commande : prix recalculés côté serveur + message WhatsApp', async () =
 
   const r = await request(app).post('/api/orders').set(H).send({
     items: [{ product_id: nivea.id, quantity: 2, price: 1 /* ignoré */ }],
-    customer_name: 'Awa Ndiaye', phone: '77 000 00 00', address: 'Cité Keur Gorgui, villa 12',
+    customer_name: 'Awa Ndiaye', phone: '78 367 63 72', address: 'Cité Keur Gorgui, villa 12',
     district_city: 'Dakar', zone_id: dakar.id, payment_method: 'wave',
   });
   assert.equal(r.status, 201, JSON.stringify(r.body));
@@ -71,7 +71,7 @@ test('auth : inscription, profil, historique, déconnexion', async () => {
   const agent = request.agent(app);
   const email = `test${Date.now()}@mail.sn`;
   const reg = await agent.post('/api/auth/register').set(H)
-    .send({ full_name: 'Fatou Diop', email, phone: '78 111 22 33', password: 'motdepasse1' });
+    .send({ full_name: 'Fatou Diop', email, phone: '78 367 63 72', password: 'motdepasse1' });
   assert.equal(reg.status, 201);
   assert.equal(reg.body.user.role, 'customer');
   assert.equal((await agent.get('/api/auth/me')).body.user.email, email);
@@ -94,4 +94,15 @@ test('admin : accès protégé et gestion produit', async () => {
   assert.equal((await agent.delete(`/api/admin/products/${created.body.id}`).set(H)).status, 200);
   const stats = await agent.get('/api/admin/stats');
   assert.equal(stats.status, 200);
+});
+
+test('admin : upload d\'image stockée en base', async () => {
+  const agent = request.agent(app);
+  await agent.post('/api/auth/login').set(H).send({ email: config.adminEmail, password: config.adminPassword });
+  const png = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==', 'base64');
+  const up = await agent.post('/api/admin/upload').set(H).attach('image', png, { filename: 'p.png', contentType: 'image/png' });
+  assert.equal(up.status, 201, JSON.stringify(up.body));
+  const img = await request(app).get(up.body.url);
+  assert.equal(img.status, 200);
+  assert.equal(img.headers['content-type'], 'image/png');
 });

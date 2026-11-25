@@ -99,16 +99,17 @@ docker compose up -d --build
 Placez ensuite un reverse-proxy HTTPS (Caddy ou Nginx + Let’s Encrypt) devant le port 4000.
 Les images envoyées par l’admin sont conservées dans le volume `uploads`.
 
-### Option B — Render / Railway
+### Option B — Gratuit : Render (site) + Neon (base PostgreSQL)
 
-1. Créer une base PostgreSQL managée et copier son URL.
-2. Créer un *Web Service* depuis le dépôt Git :
-   - Build : `npm run install:all && npm run build`
-   - Start : `npm run db:seed && npm start`
-   - Variables : `NODE_ENV=production`, `DATABASE_URL`, `DATABASE_SSL=true`, `JWT_SECRET`, `ADMIN_EMAIL`,
-     `ADMIN_PASSWORD`, `CLIENT_ORIGIN=https://<votre-domaine>`
-3. Les fichiers envoyés sont stockés sur disque : ajoutez un disque persistant monté sur `server/uploads`
-   (ou branchez un stockage objet type S3/Cloudinary).
+1. Créer une base sur https://neon.tech (région Europe) et copier la *connection string*.
+2. Pousser le projet sur GitHub.
+3. Sur https://render.com → **New → Blueprint** → choisir le dépôt : `render.yaml` configure tout.
+   Renseigner `DATABASE_URL` (Neon) et `ADMIN_PASSWORD`. `JWT_SECRET` est généré automatiquement.
+4. Les images envoyées depuis l'admin sont stockées dans PostgreSQL (table `images`) : elles ne sont pas
+   perdues quand Render redémarre le service.
+
+Limite du plan gratuit Render : le site se met en veille après 15 min sans visite ; la visite suivante
+prend environ une minute à charger.
 
 En production, Express sert à la fois l’API et le frontend compilé (`client/dist`), sur une seule URL.
 

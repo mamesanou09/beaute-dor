@@ -22,7 +22,7 @@ const phoneRegex = /^(\+?221)?\s?(7[0-8])\s?\d{3}\s?\d{2}\s?\d{2}$/;
 const registerSchema = z.object({
   full_name: z.string().trim().min(2, 'Nom trop court').max(120),
   email: z.string().trim().toLowerCase().email('Email invalide'),
-  phone: z.string().trim().regex(phoneRegex, 'Numéro sénégalais invalide (ex : 77 000 00 00)'),
+  phone: z.string().trim().regex(phoneRegex, 'Numéro sénégalais invalide (ex : 7X XXX XX XX)'),
   password: z.string()
     .min(8, 'Le mot de passe doit contenir au moins 8 caractères')
     .regex(/[A-Za-z]/, 'Le mot de passe doit contenir une lettre')

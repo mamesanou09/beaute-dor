@@ -17,7 +17,7 @@ const PHONE_RE = /^(\+?221)?\s?(7[0-8]|3[0-9])\s?\d{3}\s?\d{2}\s?\d{2}$/;
 export function validateCheckout(f) {
   const e = {};
   if (f.customer_name.trim().length < 3) e.customer_name = 'Indiquez votre nom complet.';
-  if (!PHONE_RE.test(f.phone.trim())) e.phone = 'Numéro invalide (ex : 77 000 00 00).';
+  if (!PHONE_RE.test(f.phone.trim())) e.phone = 'Numéro invalide (ex : 7X XXX XX XX).';
   if (f.address.trim().length < 5) e.address = 'Indiquez votre adresse de livraison.';
   if (f.district_city.trim().length < 2) e.district_city = 'Indiquez votre quartier / ville.';
   if (!f.zone_id) e.zone_id = 'Choisissez une zone de livraison.';
@@ -108,7 +108,7 @@ export default function Checkout() {
               {Field({ name: 'customer_name', label: 'Nom complet', children:
                 <input id="customer_name" name="customer_name" value={form.customer_name} onChange={set('customer_name')} autoComplete="name" className="input" placeholder="Awa Ndiaye" /> })}
               {Field({ name: 'phone', label: 'Téléphone', children:
-                <input id="phone" name="phone" type="tel" inputMode="tel" value={form.phone} onChange={set('phone')} autoComplete="tel" className="input" placeholder="77 000 00 00" /> })}
+                <input id="phone" name="phone" type="tel" inputMode="tel" value={form.phone} onChange={set('phone')} autoComplete="tel" className="input" placeholder="7X XXX XX XX" /> })}
               <div className="sm:col-span-2">
                 {Field({ name: 'address', label: 'Adresse de livraison', children:
                   <input id="address" name="address" value={form.address} onChange={set('address')} autoComplete="street-address" className="input" placeholder="Rue, villa, repère (ex : près de la mosquée)" /> })}

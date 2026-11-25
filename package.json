@@ -11,9 +11,14 @@
     "dev": "concurrently -n api,web -c yellow,magenta \"npm run dev --prefix server\" \"npm run dev --prefix client\"",
     "build": "npm run build --prefix client",
     "start": "npm start --prefix server",
-    "test": "npm test --prefix server"
+    "test": "npm test --prefix server",
+    "render:build": "npm install --prefix server && npm install --prefix client --include=dev && npm run build --prefix client",
+    "render:start": "npm run db:seed --prefix server && npm start --prefix server"
   },
   "devDependencies": {
     "concurrently": "^9.2.0"
+  },
+  "engines": {
+    "node": ">=20"
   }
 }

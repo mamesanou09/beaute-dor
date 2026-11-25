@@ -87,7 +87,7 @@ export function Register() {
     const e = {};
     if (form.full_name.trim().length < 2) e.full_name = 'Indiquez votre nom complet.';
     if (!/^\S+@\S+\.\S+$/.test(form.email)) e.email = 'Email invalide.';
-    if (!/^(\+?221)?\s?(7[0-8])\s?\d{3}\s?\d{2}\s?\d{2}$/.test(form.phone.trim())) e.phone = 'Numéro sénégalais invalide (ex : 77 000 00 00).';
+    if (!/^(\+?221)?\s?(7[0-8])\s?\d{3}\s?\d{2}\s?\d{2}$/.test(form.phone.trim())) e.phone = 'Numéro sénégalais invalide (ex : 7X XXX XX XX).';
     if (form.password.length < 8 || !/\d/.test(form.password) || !/[A-Za-z]/.test(form.password)) e.password = '8 caractères minimum, avec au moins une lettre et un chiffre.';
     if (form.confirm !== form.password) e.confirm = 'Les mots de passe ne correspondent pas.';
     return e;
@@ -107,7 +107,7 @@ export function Register() {
   const fields = [
     ['full_name', 'Nom complet', 'text', 'name', 'Awa Ndiaye'],
     ['email', 'Email', 'email', 'email', 'vous@exemple.sn'],
-    ['phone', 'Téléphone', 'tel', 'tel', '77 000 00 00'],
+    ['phone', 'Téléphone', 'tel', 'tel', '7X XXX XX XX'],
   ];
   return (
     <AuthShell title="Créer un compte" subtitle="Suivez vos commandes et commandez plus vite">
